@@ -1,43 +1,43 @@
 /* eslint-disable no-unused-vars */
 
-import { useState } from "react";
 import DeleteAllUsers from "./deleteUsers";
 import styled from "styled-components";
 import fakename from "../api/index";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser} from "../store/slice/userSlice";
+
+import { useSelector } from "react-redux";
 
 const UserDetails = () => {
- 
-  const [item,setitem]=useState([])
-  
-  function addnew(){
-    setitem((prev)=>{
-     return [
-      ...prev,
-      fakename()
-     ]
-    })
+  const dispatch = useDispatch();
+  const data=useSelector((state)=>{
+    return state.users;
+  })
+
+  function addNewUser(payload) {
+    // console.log(data)
+    dispatch(addUser(payload));
   }
-  function addNewUser(payload){
-    console.log(payload)
-
+  function del(payload){
+    dispatch(removeUser(payload))
   }
-
-
-
 
   return (
     <Wrapper>
       <div className="content">
         <div className="admin-table">
           <div className="admin-subtitle">List of User Details</div>
-          <button className="btn add-btn" onClick={()=>addNewUser(fakename())}>Add New Users</button>
+          <button
+            className="btn add-btn"
+            onClick={() => addNewUser(fakename())}
+          >
+            Add New Users
+          </button>
         </div>
-        <ul >
-        {item.map((item,index)=>{
-          return <><li id={index} key={index} >{item}  </li></>
-        })}
-        
-      
+        <ul>
+          {data.map((item,index)=>{
+            return <li  key={index} onClick={()=>{del(index)}} >{item} </li>
+          })}
         </ul>
         <hr />
         <DeleteAllUsers />
